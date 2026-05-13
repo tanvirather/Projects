@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="Base.Tests/Base.Tests.csproj" />
+  <Project Path="Base/Base.csproj" />
+  <Project Path="Identity.Tests/Identity.Tests.csproj" />
+  <Project Path="Identity/Identity.csproj" />
+  <Project Path="Notification.Tests/Notification.Tests.csproj" />
+  <Project Path="Notification/Notification.csproj" />
+  <Project Path="PostgresType.Tests/PostgresType.Tests.csproj" />
+  <Project Path="PostgresType/PostgresType.csproj" />
+</Solution>

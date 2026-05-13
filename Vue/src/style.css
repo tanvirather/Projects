@@ -1,0 +1,30 @@
+:root {
+  --background-color: #ffffff;
+  --surface-color: #f8fafc;
+  --radius: 10px;
+  --shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.2);
+
+  /* font */
+  --font-family: sans-serif;
+  --font-size-base: 16px;
+  --line-height-base: 1.5;
+  --text-primary: #1e293b;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--text-primary);
+  background-color: var(--surface-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+
+  >div {
+    box-sizing: border-box;
+    height: 100vh;
+    padding: 5px;
+
+  }
+}

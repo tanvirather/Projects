@@ -1,0 +1,48 @@
+FROM ubuntu:24.04
+ENV TARGETARCH="linux-x64"
+# Also can be "linux-arm", "linux-arm64".
+
+RUN apt update && \
+  apt upgrade -y && \
+  apt install -y curl git jq libicu74
+
+# Install Azure CLI
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
+################################################## BEGIN CUSTOM ##################################################
+
+# install shared packages
+RUN apt install -y wget zip
+
+# # install dotnetcore (https://learn.microsoft.com/en-us/dotnet/core/install/linux-scripted-manual)
+RUN wget https://dot.net/v1/dotnet-install.sh -O /tmp/dotnet-install.sh
+RUN chmod +x /tmp/dotnet-install.sh
+RUN /tmp/dotnet-install.sh --channel 10.0 --install-dir /usr/share/dotnet
+ENV PATH="$PATH:/usr/share/dotnet:/usr/share/dotnet/tools"
+
+# install nodejs (https://deb.nodesource.com/)
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
+RUN apt install -y nodejs
+
+# install chrome for testing
+RUN curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+RUN apt update && apt install -y google-chrome-stable
+RUN export CHROME_BIN='/usr/bin/chromium'
+
+################################################## END CUSTOM ##################################################
+
+WORKDIR /azp/
+
+COPY ./start.sh ./
+RUN chmod +x ./start.sh
+
+# Create agent user and set up home directory
+RUN useradd -m -d /home/agent agent
+RUN chown -R agent:agent /azp /home/agent
+
+USER agent
+# Another option is to run the agent as root.
+# ENV AGENT_ALLOW_RUNASROOT="true"
+
+ENTRYPOINT [ "./start.sh" ]

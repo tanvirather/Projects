@@ -1,0 +1,26 @@
+{
+  "configurations": [
+    {
+      "name": "Identity",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/CSharp/Identity/bin/Debug/net10.0/Zuhid.Identity.dll",
+      "cwd": "${workspaceFolder}/CSharp/Identity",
+      "stopAtEntry": false,
+      "launchBrowser": {
+        "enabled": true,
+      }
+    },
+    {
+      "name": "PostgresType",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/CSharp/PostgresType/bin/Debug/net10.0/Zuhid.PostgresType.dll",
+      "cwd": "${workspaceFolder}/CSharp/PostgresType",
+      "stopAtEntry": false,
+      "launchBrowser": {
+        "enabled": true,
+      }
+    }
+  ]
+}
