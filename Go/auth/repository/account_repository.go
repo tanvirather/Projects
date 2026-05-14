@@ -2,7 +2,7 @@ package repository
 
 import (
 	"github.com/google/uuid"
-	"zuhid.com/identity/model"
+	"zuhid.com/auth/model"
 )
 
 type AccountRepository struct {

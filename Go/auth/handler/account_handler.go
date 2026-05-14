@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"zuhid.com/identity/model"
-	"zuhid.com/identity/repository"
+	"zuhid.com/auth/model"
+	"zuhid.com/auth/repository"
 )
 
 func AccountHandler(r *http.Request) (any, error) {

@@ -77,4 +77,6 @@
     "editor.indentSize": 4,
     "editor.tabSize": 4,
   },
+  "workbench.externalBrowser": "firefox",
+  "workbench.browser.openLocalhostLinks": false,
 }

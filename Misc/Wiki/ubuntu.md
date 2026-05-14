@@ -2,7 +2,7 @@
 ```sh
 sudo apt update 
 sudo apt upgrade --yes
-sudo apt install --yes build-essential curl git
+sudo apt install --yes build-essential curl git inotify-tools
 
 ######################### [Install vscode](https://code.visualstudio.com/Download)
 sudo snap install --classic code 

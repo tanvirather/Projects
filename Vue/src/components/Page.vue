@@ -19,15 +19,15 @@ const displayFooter = () => props.saveText.length > 0;
 <!-------------------------------------------------- template -------------------------------------------------->
 <template>
   <div class="page">
-    <header v-if="displayHeader()">{{ title }}</header>
-    <main>
-      <slot />
-    </main>
-    <footer v-if="displayFooter()">
-      <slot name="footer">
-        <button id="save-btn" v-if="saveText.length > 0" @click="$emit('onSubmit')">{{ saveText }}</button>
-      </slot>
-    </footer>
+      <header v-if="displayHeader()">{{ title }}</header>
+      <main>
+        <slot />
+      </main>
+      <footer v-if="displayFooter()">
+        <slot name="footer">
+          <button id="save-btn" v-if="saveText.length > 0" @click="$emit('onSubmit')">{{ saveText }}</button>
+        </slot>
+      </footer>
   </div>
 </template>
 
@@ -36,23 +36,33 @@ const displayFooter = () => props.saveText.length > 0;
 .page {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: calc(100% - var(--margin) * 2);
+  background-color: var(--surface-color);
+  padding: var(--margin);
 
-  /* * {
-    border: 1px solid red;
-  } */
+  header, main, footer {
+    padding: calc(var(--margin) * 2) calc(var(--margin) * 2);
+  }
 
   header {
-    height: 25px;
+    border-radius: var(--radius) var(--radius) 0 0;
+    background-color: var(--primary-color);
+    color: var(--primary-color-text);
+    font-weight: bold;
+    font-size: larger;
   }
 
   main {
     flex: 1;
     overflow-y: auto;
+    background-color: var(--background-color);
+    box-shadow: 0 4px 8px 2px rgba(0, 0, 0, 0.2);
   }
 
   footer {
-    height: 25px;
+    border-top: 1px solid var(--surface-color);
+    background-color: var(--primary-color);
+    border-radius: 0 0 var(--radius) var(--radius);
   }
 }
 </style>

@@ -1,8 +1,11 @@
 :root {
-  --background-color: #ffffff;
-  --surface-color: #f8fafc;
-  --radius: 10px;
-  --shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.2);
+  --background-color: rgb(255, 255, 255);
+  --surface-color: rgba(0, 0, 0, 0.2);
+  --primary-color: #3b82f6;
+  --primary-color-text: white;
+  --radius: 5px;
+  --margin: 5px;
+  /* --shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.2); */
 
   /* font */
   --font-family: sans-serif;
@@ -16,7 +19,6 @@ body {
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
   color: var(--text-primary);
-  background-color: var(--surface-color);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -24,7 +26,5 @@ body {
   >div {
     box-sizing: border-box;
     height: 100vh;
-    padding: 5px;
-
   }
 }

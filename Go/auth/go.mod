@@ -1,4 +1,4 @@
-module zuhid.com/identity
+module zuhid.com/auth
 
 go 1.26.1
 

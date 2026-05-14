@@ -3,8 +3,15 @@ import { createRouter, createWebHistory } from 'vue-router';
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/login', component: () => import('../views/Login.vue') },
-    { path: '/register', component: () => import('../views/Register.vue') },
+    {
+      path: '/account', meta: { requiresAuth: false },
+      children: [
+        { path: '/account/login', component: () => import('../views/account/Login.vue') },
+        { path: '/account/register', component: () => import('../views/account/Register.vue') },
+        { path: '', redirect: '/account/register' }
+      ]
+    },
+
     {
       path: '/', component: () => import('../views/Index.vue'), meta: { requiresAuth: true },
       children: [
@@ -20,10 +27,10 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   // const isAuthenticated = !!localStorage.getItem('authToken')
-  const isAuthenticated = true
+  const isAuthenticated = false
   const requiresAuth = to.meta.requiresAuth
   if (requiresAuth && !isAuthenticated) {
-    next('/login')
+    next('/account/register')
   } else {
     next()
   }

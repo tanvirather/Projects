@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"zuhid.com/identity/handler"
+	"zuhid.com/auth/handler"
 )
 
 type JSONHandler func(r *http.Request) (interface{}, error)
