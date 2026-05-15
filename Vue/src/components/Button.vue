@@ -19,24 +19,22 @@ const computedId = computed(() => props.id || props.label.toLowerCase().replace(
 
 <!-------------------------------------------------- template -------------------------------------------------->
 <template>
-  <div class="ctrl">
-    <button :id="computedId" :disabled="disabled" @click="$emit('click', $event)">{{ label }}</button>
-  </div>
+  <button :id="computedId" :disabled="disabled" @click="$emit('click', $event)">{{ label }}</button>
 </template>
 
 <!-------------------------------------------------- style -------------------------------------------------->
 <style scoped>
-/* .ctrl {
-  display: flex;
-  flex-direction: column;
-}
-
 button {
-  background-color: var(--primary-color);
-  color: var(--text-on-primary);
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
 }
 
-button:hover:not(:disabled) {
-  background-color: var(--primary-hover);
-} */
+button:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
 </style>

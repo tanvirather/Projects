@@ -1,3 +1,5 @@
+import { toasterStore } from "./toasterStore.js";
+
 class ApiClient {
   constructor(baseURL, defaultHeaders = {}) {
     this.baseURL = baseURL;
@@ -16,17 +18,36 @@ class ApiClient {
 
     try {
       const response = await fetch(url, options);
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(`Error ${response.status}: ${errorData.message || response.statusText}`);
+      if (response.status === 200) {
+        return await response.json().catch(() => ({}));
       }
-      return await response.json();
+
+      const errorData = await response.json().catch(() => ({}));
+      let message = errorData.message || response.statusText;
+
+      switch (response.status) {
+        case 400:
+          const messages = [];
+          Object.keys(errorData).forEach(key => messages.push(...errorData[key]));
+          if (messages.length > 0) {
+            message = messages.map(msg => `${msg}`).join('\n');
+          }
+          toasterStore.warning(message);
+          break;
+        case 401:
+          toasterStore.error(`Unauthorized: ${message}`);
+          break;
+        case 500:
+          toasterStore.error(`Internal Server Error: ${message}`);
+          break;
+        default:
+          toasterStore.error(`Error ${response.status}: ${message}`);
+      }
+      return;
     } catch (error) {
-      console.error('Fetch Error:', error);
-      throw error;
+      toasterStore.error(`Failed to ${method.toLowerCase()} ${endpoint}.`);
     }
   }
 }
 
-export const apiClient = new ApiClient("http://localhost:5051")
-// export const apiClient = new ApiClient(import.meta.env.VITE_API_BASE_URL)
+export const apiClient = new ApiClient(import.meta.env.VITE_API_BASE_URL)

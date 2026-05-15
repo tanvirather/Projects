@@ -7,6 +7,16 @@ public class AppSetting : BaseSetting
     public string AppUrl { get; set; } = default!;
     public ConnectionString ConnectionStrings { get; set; } = default!;
     public NotificationOptions Notification { get; set; } = default!;
+    public JwtOptions Jwt { get; set; } = default!;
+
+    public class JwtOptions
+    {
+        public string PrivateKeyPath { get; set; } = default!;
+        public string PublicKeyPath { get; set; } = default!;
+        public string Issuer { get; set; } = default!;
+        public string Audience { get; set; } = default!;
+        public int ExpiryInMinutes { get; set; }
+    }
 
     public class ConnectionString
     {

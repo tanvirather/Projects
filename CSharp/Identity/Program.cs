@@ -8,7 +8,7 @@ partial class Program
 {
     static void Main(string[] args)
     {
-        var (builder, appSetting) = WebApplicationExtension.AddServices<AppSetting>(args, ["Repository", "Mapper", "Validator", "Client"]);
+        var (builder, appSetting) = WebApplicationExtension.AddServices<AppSetting>(args, ["Repository", "Mapper", "Validator", "Client", "Provider"]);
 
         builder.AddPostgres<IdentityContext>(appSetting.ConnectionStrings.Identity);
         builder.Services

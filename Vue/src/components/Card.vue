@@ -7,7 +7,7 @@ const props = defineProps({
 });
 
 /************************************************** Emits **************************************************/
-defineEmits(["onSubmit", "onCancel"]);
+defineEmits(["onSave", "onCancel"]);
 
 /************************************************** Computed **************************************************/
 
@@ -23,8 +23,8 @@ defineEmits(["onSubmit", "onCancel"]);
     </main>
     <footer class="card-actions">
       <slot name="footer">
-        <button id="save-btn" v-if="saveText.length > 0" @click="$emit('onSubmit')">{{ saveText }}</button>
-        <button id="cancel-btn" v-if="cancelText.length > 0" @click="$emit('onCancel')">{{ cancelText }}</button>
+        <Button :label="saveText" v-if="saveText.length > 0" @click="$emit('onSave')" />
+        <Button :label="cancelText" v-if="cancelText.length > 0" @click="$emit('onCancel')" />
       </slot>
     </footer>
   </div>
@@ -33,49 +33,37 @@ defineEmits(["onSubmit", "onCancel"]);
 <!-------------------------------------------------- style -------------------------------------------------->
 <style scoped>
 .card {
+  background-color: var(--background-color);
+  box-shadow: 0 0px 4px 2px rgba(0, 0, 0, 0.2);
+  margin: var(--margin);
+  border-radius: var(--radius);
   display: flex;
   flex-direction: column;
-  background-color: var(--background-color);
-  border-radius: var(--radius);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow);
-  margin: 5px;
 
-  >* {
-    margin: 5px;
+  header, main, footer {
+    padding: calc(var(--margin) * 2) calc(var(--margin) * 2);
   }
 
   header {
-    border-bottom: 1px solid black;
+    border-radius: var(--radius) var(--radius) 0 0;
+    background-color: var(--primary-color);
+    color: var(--primary-color-text);
+    font-weight: bold;
+    font-size: larger;
+  }
+
+  main {
+    flex: 1;
+    overflow-y: auto;
+    background-color: var(--background-color);
   }
 
   footer {
-    align-self: end;
-
-    >* {
-      margin-right: 5px;
+    border-radius: 0 0 var(--radius) var(--radius);
+    text-align: right;
+    > * {
+      margin: 0 0 0 var(--margin); 
     }
   }
 }
-
-/* .card {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  border: 1px solid #d0d0d0;
-  border-radius: 6px;
-  padding: 16px;
-}
-
-.card header {
-  font-weight: bold;
-}
-
-.card main {
-  margin-top: 8px;
-}
-
-.card footer {
-  margin-top: auto;
-} */
 </style>

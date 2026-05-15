@@ -4,18 +4,27 @@
     {
       "label": "Identity",
       "type": "shell",
-      "command": "dotnet build",
+      "command": "dotnet run",
       "options": {
         "cwd": "CSharp/Identity"
       },
       "group": "build"
     },
     {
-      "label": "PostgresType",
+      "label": "Notification",
       "type": "shell",
-      "command": "dotnet test",
+      "command": "dotnet run",
       "options": {
-        "cwd": "CSharp/PostgresType"
+        "cwd": "CSharp/Notification"
+      },
+      "group": "build"
+    },
+    {
+      "label": "Vue",
+      "type": "shell",
+      "command": "npm start",
+      "options": {
+        "cwd": "Vue"
       },
       "group": "build"
     }

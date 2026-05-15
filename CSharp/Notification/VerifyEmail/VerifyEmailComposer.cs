@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Mail;
 using Zuhid.Notification.Shared;
 
@@ -12,14 +13,15 @@ public class VerifyEmailComposer() : BaseComposer("VerifyEmail")
         var body = (await ReadTemplate("VerifyEmail.html"))
             .Replace("{{appUrl}}", message.AppUrl ?? string.Empty)
             .Replace("{{email}}", message.Email ?? string.Empty)
-            .Replace("{{token}}", message.Token);
+            .Replace("{{emailEncoded}}", WebUtility.UrlEncode(message.Email))
+            .Replace("{{token}}", WebUtility.UrlEncode(message.Token));
         var mailMessage = new MailMessage
         {
             Subject = subject,
             Body = await CreateHtmlAsync(body, style),
             IsBodyHtml = true
         };
-        mailMessage.To.Add(message.Email);
+        mailMessage.To.Add(message.Email!);
         return mailMessage;
     }
 }

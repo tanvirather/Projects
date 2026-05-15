@@ -20,7 +20,7 @@ const computedId = computed(() => props.id || props.label.toLowerCase().replace(
 
 <!-------------------------------------------------- template -------------------------------------------------->
 <template>
-  <div class="ctrl">
+  <div class="password">
     <label v-if="label" :for="computedId">{{ label }}</label>
     <input :id="computedId" type="password" :placeholder="label" :disabled="disabled" v-model="model" @blur="$emit('blur', $event)" />
   </div>
@@ -28,9 +28,19 @@ const computedId = computed(() => props.id || props.label.toLowerCase().replace(
 
 <!-------------------------------------------------- style -------------------------------------------------->
 <style scoped>
-/* .ctrl {
+.password {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
-} */
+  gap: 2px;
+  margin: 0px 0px 10px 0px;
+  > input{
+    padding: calc(var(--margin) * 1.5);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--radius);
+    background-color: var(--surface-color);
+  }
+   > input:disabled{  
+    background-color: var(--background-shadow);
+  }
+}
 </style>

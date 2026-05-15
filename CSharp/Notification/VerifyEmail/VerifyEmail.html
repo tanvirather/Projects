@@ -19,7 +19,7 @@
     <!-- Action Button -->
     <tr>
       <td class="button-container">
-        <a href="{{appUrl}}/VerifyEmail/{{token}}" class="button">Verify Email Address</a>
+        <a href="{{appUrl}}/account/verify-email/{{emailEncoded}}/{{token}}" class="button">Verify Email Address</a>
       </td>
     </tr>
 
@@ -27,7 +27,8 @@
     <tr>
       <td class="body-text" style="font-size: 13px; border-top: 1px solid #e5e7eb; padding-top: 20px;">
         <p>If the button doesn't work, copy and paste this link into your browser:</p>
-        <p style="word-break: break-all;"><a href="{{appUrl}}/VerifyEmail/{{token}}" style="color: #4f46e5;">{{appUrl}}/VerifyEmail/{{token}}</a></p>
+        <p style="word-break: break-all;"><a href="{{appUrl}}/account/verify-email/{{emailEncoded}}/{{token}}" style="color: #4f46e5;">{{appUrl}}/account/verify-email/{{emailEncoded}}/{{token}}</a>
+        </p>
       </td>
     </tr>
   </table>

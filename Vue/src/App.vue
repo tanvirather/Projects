@@ -1,6 +1,8 @@
-<script setup></script>
+<script setup>
+</script>
 
 <template>
+  <Toaster />
   <RouterView />
 </template>
 

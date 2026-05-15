@@ -13,7 +13,7 @@ public class IdenttityControllerTest
         // Arrange
         var mockQueue = new Mock<NotificationQueue>();
         var controller = new IdentityController(mockQueue.Object);
-        var message = new VerifyEmailMessage { AppUrl = "AppUrl" };
+        var message = new VerifyEmailMessage { AppUrl = "AppUrl", Email = "Email", Token = "Token" };
 
         // Act
         await controller.VerifyEmail(message);
