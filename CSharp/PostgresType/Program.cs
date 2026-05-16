@@ -6,7 +6,9 @@ partial class Program
 {
     static void Main(string[] args)
     {
-        var (builder, appSetting) = WebApplicationExtension.AddServices<AppSetting>(args, ["Repository", "Mapper", "Validator"]);
+        var builder = WebApplication.CreateBuilder(args);
+        var appSetting = new AppSetting(builder.Configuration);
+        builder.AddServices(appSetting, ["Repository", "Mapper", "Validator"]);
         var app = builder.BuildServices(appSetting);
         app.Run();
     }

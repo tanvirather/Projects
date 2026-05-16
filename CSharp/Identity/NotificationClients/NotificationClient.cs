@@ -12,4 +12,6 @@ public class NotificationClient(HttpClient httpClient, AppSetting appSetting, IL
     }
 
     public virtual async Task VerifyEmail(VerifyEmailRequest request) => await Post("Identity/VerifyEmail", request);
+
+    public virtual async Task VerifyPhone(VerifyPhoneRequest request) => await Post("Identity/VerifyPhone", request);
 }

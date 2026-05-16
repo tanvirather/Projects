@@ -8,6 +8,7 @@ using Zuhid.Identity.Requests;
 
 using Zuhid.Identity.Validators;
 using Zuhid.Identity.Providers;
+using System.Text.Json;
 
 namespace Zuhid.Identity.Controllers;
 
@@ -52,6 +53,12 @@ public class AccountController(UserRepository userRepository, NotificationClient
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         var (result, user) = await userRepository.Login(request.Email, request.Password);
+
+        if (result.RequiresTwoFactor)
+        {
+            return Ok(new { RequiresTwoFactor = true, UserId = user!.Id });
+        }
+
         loginValidator.Validate(result, ModelState);
 
         if (!ModelState.IsValid)
@@ -63,8 +70,108 @@ public class AccountController(UserRepository userRepository, NotificationClient
         return Ok(new { Token = token });
     }
 
+    [HttpGet("{id}")]
+    [Authorize]
+    public async Task<IActionResult> Get(Guid id)
+    {
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        Console.WriteLine(JsonSerializer.Serialize(userId));
+
+        var user = await userRepository.GetById(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(user);
+    }
+
+    [HttpPost("ConfirmPhone")]
+    public async Task ConfirmPhone([FromBody] ConfirmPhoneRequest request)
+    {
+        var errors = await userRepository.ConfirmPhoneAsync(request.Id.ToString(), request.Token);
+        errors?.ForEach(e => ModelState.AddModelError(e.Key, e.Value));
+    }
+
+    [HttpPost("VerifyPhone/{id}")]
+    public async Task VerifyPhone(Guid id)
+    {
+        var (user, token) = await userRepository.GenerateChangePhoneNumberTokenAsync(id);
+        if (user == null)
+        {
+            return;
+        }
+        await notificationClient.VerifyPhone(new NotificationRequests.VerifyPhoneRequest(user.PhoneNumber, token));
+    }
+
+    [HttpPost("LoginTwoFactor")]
+    public async Task<IActionResult> LoginTwoFactor([FromBody] TwoFactorLoginRequest request)
+    {
+        var user = await userRepository.GetById(request.UserId);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var (result, signInUser) = await userRepository.TwoFactorAuthenticatorSignInAsync(request.Code, false, false);
+        if (!result.Succeeded)
+        {
+            ModelState.AddModelError("Code", "Invalid authenticator code.");
+            return BadRequest(ModelState);
+        }
+
+        var token = jwtProvider.GenerateToken(signInUser!);
+        return Ok(new { Token = token });
+    }
+
+    [HttpGet("EnableTwoFactor/{userId}")]
+    public async Task<IActionResult> EnableTwoFactor(Guid userId)
+    {
+        // var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        Console.WriteLine(userId);
+        var user = await userRepository.GetById(userId);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var unformattedKey = await userRepository.GetAuthenticatorKeyAsync(user);
+        if (string.IsNullOrEmpty(unformattedKey))
+        {
+            await userRepository.ResetAuthenticatorKeyAsync(user);
+            unformattedKey = await userRepository.GetAuthenticatorKeyAsync(user);
+        }
+
+        var authenticatorUri = string.Format(
+            "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6",
+            "Zuhid",
+            user.Email,
+            unformattedKey);
+
+        return Ok(new { SharedKey = unformattedKey, AuthenticatorUri = authenticatorUri });
+    }
+
+    [HttpPost("EnableTwoFactor")]
+    public async Task<IActionResult> EnableTwoFactor([FromBody] EnableTwoFactorRequest request)
+    {
+        var user = await userRepository.GetById(request.UserId);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var isValid = await userRepository.VerifyTwoFactorTokenAsync(user, request.Code);
+        if (!isValid)
+        {
+            ModelState.AddModelError("Code", "Verification code is invalid.");
+            return BadRequest(ModelState);
+        }
+
+        await userRepository.SetTwoFactorEnabledAsync(user, true);
+        return Ok();
+    }
+
     [HttpPut]
-    [AllowAnonymous]
     public async Task Update([FromBody] UpdateAccountRequest request)
     {
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
@@ -81,20 +188,17 @@ public class AccountController(UserRepository userRepository, NotificationClient
             PhoneNumber = request.Phone
         });
 
-        errors?.ForEach(e => ModelState.AddModelError(e.Key, e.Value));
-    }
-
-    [HttpGet("{id}")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Get(Guid id)
-    {
-        var user = await userRepository.GetById(id);
-        if (user == null)
+        if (errors == null)
         {
-            return NotFound();
+            var user = await userRepository.GetById(Guid.Parse(userId));
+            if (user != null)
+            {
+                var token = await userRepository.GenerateChangePhoneNumberTokenAsync(user, request.Phone);
+                await notificationClient.VerifyPhone(new NotificationRequests.VerifyPhoneRequest(request.Phone, token));
+            }
         }
 
-        return Ok(user);
+        errors?.ForEach(e => ModelState.AddModelError(e.Key, e.Value));
     }
 }
 

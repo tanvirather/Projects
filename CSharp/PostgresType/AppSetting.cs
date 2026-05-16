@@ -12,9 +12,8 @@ public class AppSetting : BaseSetting
         public string Log { get; set; } = default!;
     }
 
-    public override void Bind(IConfiguration configuration)
+    public AppSetting(IConfiguration configuration) : base(configuration)
     {
-        configuration.Bind(this);
         ConnectionStrings = new ConnectionString
         {
             PostgresType = ReplaceCredential(configuration, "PostgresType"),

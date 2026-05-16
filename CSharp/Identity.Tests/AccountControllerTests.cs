@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Zuhid.Base;
 using Zuhid.Identity.Controllers;
 using Zuhid.Identity.Entities;
 using Zuhid.Identity.NotificationClients;
 using Zuhid.Identity.Repositories;
 using Zuhid.Identity.Requests;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Zuhid.Identity.Validators;
 using Zuhid.Identity.Providers;
 
@@ -26,10 +30,19 @@ public class AccountControllerTests
 
         _mockUserRepository = new Mock<UserRepository>(mockUserManager.Object, mockSignInManager.Object);
 
-        var appSetting = new AppSetting
+        var inMemorySettings = new Dictionary<string, string?> {
+            {"ConnectionStrings:Identity", "Host=localhost;Database=Identity;Username=postgres;Password=[postgres_credential]"},
+            {"ConnectionStrings:Log", "Host=localhost;Database=Log;Username=postgres;Password=[postgres_credential]"},
+            {"postgres_credential", "testpassword"}
+        };
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var appSetting = new AppSetting(configuration)
         {
             Notification = new AppSetting.NotificationOptions { BaseUrl = "http://localhost", Authorization = "test" },
-            Jwt = new AppSetting.JwtOptions
+            Jwt = new BaseSetting.JwtOptions
             {
                 Issuer = "TestIssuer",
                 Audience = "TestAudience",
@@ -42,7 +55,13 @@ public class AccountControllerTests
         _mockNotificationClient = new Mock<NotificationClient>(new HttpClient(), appSetting, Mock.Of<ILogger<NotificationClient>>());
         _mockJwtProvider = new Mock<JwtProvider>(appSetting);
 
-        _controller = new AccountController(_mockUserRepository.Object, _mockNotificationClient.Object, appSetting, new LoginValidator(), _mockJwtProvider.Object);
+        _controller = new AccountController(_mockUserRepository.Object, _mockNotificationClient.Object, appSetting, new LoginValidator(), _mockJwtProvider.Object)
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(new ClaimsIdentity()) }
+            }
+        };
     }
 
     [Fact]

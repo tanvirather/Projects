@@ -22,7 +22,7 @@
   "files.insertFinalNewline": true,
   "html.format.wrapLineLength": 200,
   "workbench.browser.openLocalhostLinks": false,
-  "workbench.externalBrowser": "firefox",
+  "workbench.externalBrowser": "edge",
   "files.exclude": {
     "**/.config": true,
     "**/.editorconfig": true,

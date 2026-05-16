@@ -12,7 +12,7 @@ class Toaster {
   success = (message, duration = 2) => this.#add(message, 'success', duration);
   info = (message, duration = 2) => this.#add(message, 'info', duration);
   warning = (message, duration = 5) => this.#add(message, 'warning', duration);
-  error = (message, duration = null) => this.#add(message, 'error', duration);
+  error = (message, duration = 3) => this.#add(message, 'error', duration);
   dismiss = (id) => this.#remove(id);
 
   #add(message, type = 'error', duration = 3) {

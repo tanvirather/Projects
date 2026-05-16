@@ -14,8 +14,5 @@ public class AppSetting : BaseSetting
         public TimeSpan RetryInterval { get; init; }
     }
 
-    public override void Bind(IConfiguration configuration)
-    {
-        configuration.Bind(this);
-    }
+    public AppSetting(IConfiguration configuration) : base(configuration) { }
 }
