@@ -1,0 +1,12 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: php_crowdilm
+    ports:
+      - "8080:80"
+    volumes:
+      - ./public_html:/var/www/html
+      - ./private_html:/var/www/private_html
+
